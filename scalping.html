@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scalping</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f4f4f4;
+            overflow: hidden;
+        }
+
+        .form-container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            transform: translateY(-20px);
+            animation: fadeInUp 0.5s ease-out forwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-container h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+            font-size: 24px;
+            animation: fadeIn 1s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .form-group select,
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: border-color 0.3s ease-in-out;
+        }
+
+        .form-group select:focus,
+        .form-group input:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .button-group button {
+            flex: 1;
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        .button-group button:hover {
+            background-color: #0056b3;
+            transform: translateY(-3px);
+        }
+
+        .button-group button:active {
+            transform: translateY(1px);
+        }
+
+        #result {
+            margin-top: 20px;
+            text-align: center;
+            font-weight: bold;
+            color: #333;
+            opacity: 0;
+            animation: fadeInResult 0.5s ease-out forwards;
+        }
+
+        @keyframes fadeInResult {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="form-container">
+        <h2>Scalping</h2>
+        <form>
+            <div class="form-group">
+                <label for="dropdown1">Select Market</label>
+                <select id="dropdown1" name="dropdown1">
+                    <option value="" disabled selected>Select an option</option>
+                    <option value="nifty">Nifty</option>
+                    <option value="bnknifty">Bank Nifty</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="number1">High of 5 Minutes Candle starting at 9:15 am</label>
+                <input type="number" id="number1" name="number1" placeholder="Enter a number">
+            </div>
+
+            <div class="form-group">
+                <label for="number2">Low of 5 Minutes Candle starting at 9:15 am</label>
+                <input type="number" id="number2" name="number2" placeholder="Enter a number">
+            </div>
+
+            <div class="button-group">
+                <button type="button" id="northpole-btn">NORTH POLE</button>
+                <button type="button" id="southpole-btn">SOUTH POLE</button>
+                <button type="button" id="cancer-btn">CANCER</button>
+                <button type="button" id="equator-btn">EQUATOR</button>
+                <button type="button" id="capricorn-btn">CAPRICORN</button>
+            </div>
+        </form>
+
+        <div id="result"></div>
+    </div>
+
+    <script>
+        const calculateResult = (dropdown, highValue, lowValue, type) => {
+            const resultDiv = document.getElementById('result');
+            let result = null;
+
+            if (dropdown && !isNaN(highValue) && !isNaN(lowValue)) {
+                const Nresult = highValue + (highValue * 0.2611);
+                const Sresult = lowValue - (lowValue * 0.2611);
+
+                switch (type) {
+                    case 'northpole':
+                        result = Nresult;
+                        break;
+                    case 'southpole':
+                        result = Sresult;
+                        break;
+                    case 'cancer':
+                        result = Nresult - (Nresult - Sresult) * 0.2611;
+                        break;
+                    case 'equator':
+                        result = (Nresult + Sresult) / 2;
+                        break;
+                    case 'capricorn':
+                        result = Sresult + (Nresult - Sresult) * 0.2611;
+                        break;
+                }
+                resultDiv.textContent = `Calculated ${type.charAt(0).toUpperCase() + type.slice(1)} Result (${dropdown}): ${result.toFixed(2)}`;
+            } else {
+                resultDiv.textContent = 'Please select a valid option and provide both high and low values.';
+            }
+        };
+
+        document.getElementById('northpole-btn').addEventListener('click', () => {
+            const dropdown = document.getElementById('dropdown1').value;
+            const highValue = parseFloat(document.getElementById('number1').value);
+            const lowValue = parseFloat(document.getElementById('number2').value);
+
+            if (dropdown) {
+                calculateResult(dropdown, highValue, lowValue, 'northpole');
+            }
+        });
+
+        document.getElementById('southpole-btn').addEventListener('click', () => {
+            const dropdown = document.getElementById('dropdown1').value;
+            const highValue = parseFloat(document.getElementById('number1').value);
+            const lowValue = parseFloat(document.getElementById('number2').value);
+
+            if (dropdown) {
+                calculateResult(dropdown, highValue, lowValue, 'southpole');
+            }
+        });
+
+        document.getElementById('cancer-btn').addEventListener('click', () => {
+            const dropdown = document.getElementById('dropdown1').value;
+            const highValue = parseFloat(document.getElementById('number1').value);
+            const lowValue = parseFloat(document.getElementById('number2').value);
+
+            if (dropdown) {
+                calculateResult(dropdown, highValue, lowValue, 'cancer');
+            }
+        });
+
+        document.getElementById('equator-btn').addEventListener('click', () => {
+            const dropdown = document.getElementById('dropdown1').value;
+            const highValue = parseFloat(document.getElementById('number1').value);
+            const lowValue = parseFloat(document.getElementById('number2').value);
+
+            if (dropdown) {
+                calculateResult(dropdown, highValue, lowValue, 'equator');
+            }
+        });
+
+        document.getElementById('capricorn-btn').addEventListener('click', () => {
+            const dropdown = document.getElementById('dropdown1').value;
+            const highValue = parseFloat(document.getElementById('number1').value);
+            const lowValue = parseFloat(document.getElementById('number2').value);
+
+            if (dropdown) {
+                calculateResult(dropdown, highValue, lowValue, 'capricorn');
+            }
+        });
+    </script>
+</body>
+
+</html>
